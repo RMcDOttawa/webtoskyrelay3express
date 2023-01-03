@@ -1,0 +1,51 @@
+<html lang="EN">
+
+<head>
+  <title>Web-To-Sky Relay</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+<h1>Web-to-Sky Relay</h1>
+<p>This is a miniature relay server that allows web api requests to be translated to the low-level
+  TCP requests used by TheSkyX when running in TCP server mode.</p>
+<p>Interaction is via the RESTFUL interface at /api/[endpoint]. There is no reason for a human other than the developer to be looking at this page or interacting directly with this relay server.  Interaction is via the api, and from the WebSkyDarks program running in a browser.</p>
+<h2>API</h2>
+<p>The following API urls are supported.</p>
+<table class="api-table">
+  <thead>
+  <tr>
+    <td>Type</td>
+    <td>URL</td>
+    <td>Parameters</td>
+    <td>Function</td>
+    <td>Response</td>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>GET</td>
+    <td>/</td>
+    <td>(none)</td>
+    <td>Program info</td>
+    <td>This web page</td>
+  </tr>
+  <tr>
+    <td>GET</td>
+    <td>/api/testrelay</td>
+    <td>(none)</td>
+    <td>Test API connection to the relay server</td>
+    <td>"Relay Success"</td>
+  </tr>
+  <tr>
+    <td>GET</td>
+    <td>/api/testtsx</td>
+    <td>(none)</td>
+    <td>Test API connection between relay and TheSkyX</td>
+    <td>"TSX Success" or error 503</td>
+  </tr>
+  </tbody>
+</table>
+</body>
+
+</html>
