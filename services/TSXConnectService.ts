@@ -11,6 +11,8 @@ const TSXPrefix =
     '/* Java Script */\n' +
     '/* Socket Start Packet */\n';
 
+const SOCKET_TIMEOUT = 5 * 1000;    //  5 seconds, in milliseconds
+
 const TSXSuffix = '/* Socket End Packet */\n';
 
 export class TSXConnectService {
@@ -18,17 +20,25 @@ export class TSXConnectService {
 
     //  Establish net connection in promise form so we can wait for it to succesd
     establishConnection(hostName: string, port: number): Promise<net.Socket> {
+        console.log(`establishConnection(${hostName},${port}) entered`);
         return new Promise ((resolve, reject) => {
-            const socket = net.connect(port, hostName, () => {
-                // console.log('establishConnection/connect listener called');
+            this.socket = new net.Socket();
+            this.socket.setTimeout(SOCKET_TIMEOUT);
+            console.log('  Setting up event handlers');
+            this.socket.on('timeout', () => {
+                this.socket!.emit('error', new Error('ETIMEDOUT'));
             });
-            socket.on('connect', () => {
+            this.socket.on('connect', () => {
                 // console.log('  connect callback called');
-                resolve(socket);
+                resolve(this.socket!);
             });
-            socket.on('error', () => {
+            this.socket.on('error', () => {
                 // console.log('  connect error callback called');
                 reject('Error on socket.connect');
+            });
+            console.log('  Connecting');
+            this.socket.connect(port, hostName, () => {
+                console.log('establishConnection/connect listener called');
             });
         });
     }
