@@ -37,8 +37,8 @@ export class TSXConnectService {
     //  returning a promise of results.  The promise, when resolved, parses the response
     //  and returns a 3-ple of the text message, the suffix, and the error code
     async sendAndReceive(command: string): Promise<TSXResponseParts> {
-        // console.log('TSXConnectService/sendAndReceive entered');
-        // console.log('  Establishing connection');
+        console.log('TSXConnectService/sendAndReceive entered');
+        console.log('  Establishing connection');
         this.socket = await this.establishConnection(tsxHost, portNumber);
         // console.log('  Socket = ', this.socket);
 
@@ -48,20 +48,20 @@ export class TSXConnectService {
             this.socket!.on('data', (dataBuffer) => {
                 const responseString = dataBuffer.toString();
                 const parsedParts: TSXResponseParts = this.parseResponseParts(responseString);
-                // console.log('data event received: ', responseString);
-                // console.log('  resolving promise with 3ple: ', parsedParts);
+                console.log('data event received: ', responseString);
+                console.log('  resolving promise with 3ple: ', parsedParts);
                 resolve(parsedParts);
             });
 
             //  If we get an error back from the server we'll reject the promise
             this.socket!.on('error', (error) => {
-                // console.log('server error received: ', error);
+                console.log('server error received: ', error);
                 reject(error);
             })
 
             //  Send the message to the server
-            this.socket!.write(  this.encapsulateJsForTheSky(command), () => {
-                // console.log('SendAndReceive write callback: write is complete.')
+            this.socket!.write(  this.encapsulateJsForTheSky(command + ";\n"), () => {
+                console.log('SendAndReceive write callback: write is complete.')
             });
         })
     }
