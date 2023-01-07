@@ -8,6 +8,8 @@ const getAutosavePathCommand = "var path=ccdsoftCamera.AutoSavePath;\n"
     + "var Out;\n"
     + "Out=path;\n";
 
+const shortTimeoutSimpleInfo = 2 * 1000;
+
 export class GetAutosavePathRoute implements RouteDescriptor {
 
     path = '/api/getautosavepath';
@@ -18,7 +20,7 @@ export class GetAutosavePathRoute implements RouteDescriptor {
         if (tsxService) {
             console.log('Sending get-autosave command: ', getAutosavePathCommand);
             try {
-                const {message, suffix, errorCode} = await tsxService.sendAndReceive(getAutosavePathCommand);
+                const {message, suffix, errorCode} = await tsxService.sendAndReceive(getAutosavePathCommand, shortTimeoutSimpleInfo);
                 console.log('  Message returned: ', message);
                 if (errorCode == 0) {
                     res.status(200).send(message);

@@ -2,7 +2,6 @@ import * as net from "net";
 import {Socket} from "net";
 
 //  Service to manage network connection with TheSkyX
-//  Decorated as a Service so it can be dependency-injected into Route handlers that need it.
 
 const portNumber: number = Number.isInteger(process.env.TSXPORT) ? Number(process.env.TSXPORT) : 3040;
 const tsxHost: string = process.env.TSXHOST ? process.env.TSXHOST : 'localhost';
@@ -11,7 +10,6 @@ const TSXPrefix =
     '/* Java Script */\n' +
     '/* Socket Start Packet */\n';
 
-const SOCKET_TIMEOUT = 5 * 1000;    //  5 seconds, in milliseconds
 
 const TSXSuffix = '/* Socket End Packet */\n';
 
@@ -24,9 +22,9 @@ export class TSXConnectServiceSingleton {
 
     getInstance(): TSXConnectService {
         if (globalTSXConnectInstance) {
-            console.log('Already have TSXConnectService instance, using that');
+            // console.log('Already have TSXConnectService instance, using that');
         } else {
-            console.log('No TSXConnectService instance exists yet, creating one.');
+            // console.log('No TSXConnectService instance exists yet, creating one.');
             globalTSXConnectInstance = new TSXConnectService();
         }
         return globalTSXConnectInstance!;
@@ -36,12 +34,12 @@ export class TSXConnectServiceSingleton {
 export class TSXConnectService {
     socket: Socket | null = null;
 
-    //  Establish net connection in promise form so we can wait for it to succesd
-    establishConnection(hostName: string, port: number): Promise<net.Socket> {
+    //  Establish net connection in promise form, so we can wait for it to succeed
+    establishConnection(hostName: string, port: number, timeOut: number): Promise<net.Socket> {
         // console.log(`establishConnection(${hostName},${port}) entered`);
         return new Promise ((resolve, reject) => {
             this.socket = new net.Socket();
-            this.socket.setTimeout(SOCKET_TIMEOUT);
+            this.socket.setTimeout(timeOut);
             // console.log('  Setting up event handlers');
             this.socket.on('timeout', () => {
                 this.socket!.emit('error', new Error('ETIMEDOUT'));
@@ -64,10 +62,10 @@ export class TSXConnectService {
     //  Send the given command (wrapping it in special javascript comments as TSX requires),
     //  returning a promise of results.  The promise, when resolved, parses the response
     //  and returns a 3-ple of the text message, the suffix, and the error code
-    async sendAndReceive(command: string): Promise<TSXResponseParts> {
+    async sendAndReceive(command: string, timeout: number): Promise<TSXResponseParts> {
         // console.log('TSXConnectService/sendAndReceive entered');
         // console.log('  Establishing connection');
-        this.socket = await this.establishConnection(tsxHost, portNumber);
+        this.socket = await this.establishConnection(tsxHost, portNumber, timeout);
         // console.log('  Socket = ', this.socket);
 
         return new Promise((resolve, reject) => {
@@ -89,7 +87,7 @@ export class TSXConnectService {
 
             //  Send the message to the server
             this.socket!.write(  this.encapsulateJsForTheSky(command + ";\n"), () => {
-                console.log('SendAndReceive write callback: write is complete.')
+                // console.log('SendAndReceive write callback: write is complete.')
             });
         })
     }
