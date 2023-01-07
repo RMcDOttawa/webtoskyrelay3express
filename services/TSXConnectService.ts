@@ -15,16 +15,34 @@ const SOCKET_TIMEOUT = 5 * 1000;    //  5 seconds, in milliseconds
 
 const TSXSuffix = '/* Socket End Packet */\n';
 
+let globalTSXConnectInstance: TSXConnectService | null = null
+
+//  TSXConnectService is a singleton - only one is ever created
+export class TSXConnectServiceSingleton {
+    constructor() {
+    }
+
+    getInstance(): TSXConnectService {
+        if (globalTSXConnectInstance) {
+            console.log('Already have TSXConnectService instance, using that');
+        } else {
+            console.log('No TSXConnectService instance exists yet, creating one.');
+            globalTSXConnectInstance = new TSXConnectService();
+        }
+        return globalTSXConnectInstance!;
+    }
+}
+
 export class TSXConnectService {
     socket: Socket | null = null;
 
     //  Establish net connection in promise form so we can wait for it to succesd
     establishConnection(hostName: string, port: number): Promise<net.Socket> {
-        console.log(`establishConnection(${hostName},${port}) entered`);
+        // console.log(`establishConnection(${hostName},${port}) entered`);
         return new Promise ((resolve, reject) => {
             this.socket = new net.Socket();
             this.socket.setTimeout(SOCKET_TIMEOUT);
-            console.log('  Setting up event handlers');
+            // console.log('  Setting up event handlers');
             this.socket.on('timeout', () => {
                 this.socket!.emit('error', new Error('ETIMEDOUT'));
             });
@@ -36,9 +54,9 @@ export class TSXConnectService {
                 // console.log('  connect error callback called');
                 reject('Error on socket.connect');
             });
-            console.log('  Connecting');
+            // console.log('  Connecting');
             this.socket.connect(port, hostName, () => {
-                console.log('establishConnection/connect listener called');
+                // console.log('establishConnection/connect listener called');
             });
         });
     }
@@ -47,8 +65,8 @@ export class TSXConnectService {
     //  returning a promise of results.  The promise, when resolved, parses the response
     //  and returns a 3-ple of the text message, the suffix, and the error code
     async sendAndReceive(command: string): Promise<TSXResponseParts> {
-        console.log('TSXConnectService/sendAndReceive entered');
-        console.log('  Establishing connection');
+        // console.log('TSXConnectService/sendAndReceive entered');
+        // console.log('  Establishing connection');
         this.socket = await this.establishConnection(tsxHost, portNumber);
         // console.log('  Socket = ', this.socket);
 
@@ -58,8 +76,8 @@ export class TSXConnectService {
             this.socket!.on('data', (dataBuffer) => {
                 const responseString = dataBuffer.toString();
                 const parsedParts: TSXResponseParts = this.parseResponseParts(responseString);
-                console.log('data event received: ', responseString);
-                console.log('  resolving promise with 3ple: ', parsedParts);
+                // console.log('data event received: ', responseString);
+                // console.log('  resolving promise with 3ple: ', parsedParts);
                 resolve(parsedParts);
             });
 
