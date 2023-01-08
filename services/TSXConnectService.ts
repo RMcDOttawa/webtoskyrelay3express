@@ -137,8 +137,10 @@ export class TSXConnectService {
             // console.log('serverHealth called');
             const shortTimeoutSimpleInfo = 5 * 1000;
             const trivialCommand = this.commandsService.getServerBuildCommand();
+            // console.log('  Sending test command: ', trivialCommand);
             try {
                 const {message, errorCode} = await this.sendAndReceive(trivialCommand, shortTimeoutSimpleInfo);
+                // console.log(`  Received code ${errorCode}, message: `, message);
                 if (errorCode == 0 && message.startsWith('TheSky Build=')) {
                     resolve(true);
                     this.close();

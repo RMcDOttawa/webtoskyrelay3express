@@ -3,6 +3,7 @@ import {TestTSXRoute} from "./TestTSXRoute";
 import {SendRawTextRoute} from "./SendRawTextRoute";
 import {GetAutosavePathRoute} from "./GetAutosavePathRoute";
 import {TimeDownloadRoute} from "./TimeDownloadRoute";
+import {AcquireRoute} from "./AcquireRoute";
 
 export const routes = [
     new TestRelayRoute(),
@@ -10,4 +11,5 @@ export const routes = [
     new SendRawTextRoute(),
     new GetAutosavePathRoute(),
     new TimeDownloadRoute(),
+    new AcquireRoute(),
 ];

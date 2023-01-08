@@ -64,4 +64,18 @@ export class CommandsService {
         return 'var Out;\n' +
             'Out="TheSky Build=" + Application.build\n';
     }
+
+    captureDarkFrame(binning: number, exposure: number, sync: TSXSync, autoSave: boolean): string {
+        return "ccdsoftCamera.Autoguider=false;\n"        //  Use main camera
+            + `ccdsoftCamera.Asynchronous=${sync === TSXSync.async};\n`   //  Wait for camera?
+            + "ccdsoftCamera.Frame=3;\n"              //  Bias frame
+            + "ccdsoftCamera.ImageReduction=0;\n"       // No autodark or calibration
+            + "ccdsoftCamera.ToNewWindow=false;\n"      // Reuse window, not new one
+            + "ccdsoftCamera.ccdsoftAutoSaveAs=0;\n"    //  0 = FITS format
+            + `ccdsoftCamera.AutoSaveOn=${autoSave};\n`
+            + `ccdsoftCamera.BinX=${binning};\n`
+            + `ccdsoftCamera.BinY=${binning};\n`
+            + "ccdsoftCamera.ExposureTime=0;\n"
+            + "var cameraResult = ccdsoftCamera.TakeImage();\n"
+    }
 }
