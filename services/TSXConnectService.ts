@@ -1,5 +1,6 @@
 import * as net from "net";
 import {Socket} from "net";
+import {CommandsService, CommandsServiceSingleton} from "./CommandsService";
 
 //  Service to manage network connection with TheSkyX
 
@@ -17,8 +18,6 @@ let globalTSXConnectInstance: TSXConnectService | null = null
 
 //  TSXConnectService is a singleton - only one is ever created
 export class TSXConnectServiceSingleton {
-    constructor() {
-    }
 
     getInstance(): TSXConnectService {
         if (globalTSXConnectInstance) {
@@ -33,6 +32,11 @@ export class TSXConnectServiceSingleton {
 
 export class TSXConnectService {
     socket: Socket | null = null;
+    commandsService: CommandsService;
+
+    constructor() {
+        this.commandsService = new CommandsServiceSingleton().getInstance();
+    }
 
     //  Establish net connection in promise form, so we can wait for it to succeed
     establishConnection(hostName: string, port: number, timeOut: number): Promise<net.Socket> {
@@ -81,7 +85,7 @@ export class TSXConnectService {
 
             //  If we get an error back from the server we'll reject the promise
             this.socket!.on('error', (error) => {
-                console.log('server error received: ', error);
+                // console.log('server error received: ', error);
                 reject(error);
             })
 
@@ -120,7 +124,32 @@ export class TSXConnectService {
 
     close() {
         if (this.socket) {
+            // console.log('closing connection');
             this.socket.destroy();
+            this.socket = null;
         }
+    }
+
+    //  Do a quick check whether the server is healthy and responsive by asking it for
+    //  its build level
+    async serverHealthy(): Promise<boolean> {
+        return new Promise<boolean>(async (resolve) => {
+            // console.log('serverHealth called');
+            const shortTimeoutSimpleInfo = 5 * 1000;
+            const trivialCommand = this.commandsService.getServerBuildCommand();
+            try {
+                const {message, errorCode} = await this.sendAndReceive(trivialCommand, shortTimeoutSimpleInfo);
+                if (errorCode == 0 && message.startsWith('TheSky Build=')) {
+                    resolve(true);
+                    this.close();
+                } else {
+                    resolve(false);
+                    this.close();
+                }
+            } catch (error) {
+                resolve(false);
+                this.close();
+            }
+        })
     }
 }

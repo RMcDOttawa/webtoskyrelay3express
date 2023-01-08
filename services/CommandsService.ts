@@ -35,17 +35,17 @@ export class CommandsService {
     //  Specify whether to wait or let it run async, and whether image is to be saved.
     captureBiasFrame(binning: number, sync: TSXSync, autosave: boolean): string {
         // console.log('captureBiasFrame, binning: ', binning);
-        return "ccdsoftCamera.Autoguider=false;"        //  Use main camera
-            + `ccdsoftCamera.Asynchronous=${sync === TSXSync.async};`   //  Wait for camera?
-            + "ccdsoftCamera.Frame=2;"              //  Bias frame
-            + "ccdsoftCamera.ImageReduction=0;"       // No autodark or calibration
-            + "ccdsoftCamera.ToNewWindow=false;"      // Reuse window, not new one
-            + "ccdsoftCamera.ccdsoftAutoSaveAs=0;"    //  0 = FITS format
-            + `ccdsoftCamera.AutoSaveOn=${autosave};`
-            + `ccdsoftCamera.BinX=${binning};`
-            + `ccdsoftCamera.BinY=${binning};`
-            + "ccdsoftCamera.ExposureTime=0;"
-            + "var cameraResult = ccdsoftCamera.TakeImage();"
+        return "ccdsoftCamera.Autoguider=false;\n"        //  Use main camera
+            + `ccdsoftCamera.Asynchronous=${sync === TSXSync.async};\n`   //  Wait for camera?
+            + "ccdsoftCamera.Frame=2;\n"              //  Bias frame
+            + "ccdsoftCamera.ImageReduction=0;\n"       // No autodark or calibration
+            + "ccdsoftCamera.ToNewWindow=false;\n"      // Reuse window, not new one
+            + "ccdsoftCamera.ccdsoftAutoSaveAs=0;\n"    //  0 = FITS format
+            + `ccdsoftCamera.AutoSaveOn=${autosave};\n`
+            + `ccdsoftCamera.BinX=${binning};\n`
+            + `ccdsoftCamera.BinY=${binning};\n`
+            + "ccdsoftCamera.ExposureTime=0;\n"
+            + "var cameraResult = ccdsoftCamera.TakeImage();\n"
             + 'var Out;Out=cameraResult+"\\n";\n';
         // console.log(' Returning command: ', command);
         // return command;

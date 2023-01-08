@@ -27,14 +27,20 @@ export class TimeDownloadRoute implements RouteDescriptor {
             const captureBiasCommand = commandsService.captureBiasFrame(binningValue, TSXSync.sync, false);
 
             try {
-                const timeBeforeCapture = new Date();
-                const {message, suffix, errorCode} = await tsxService.sendAndReceive(captureBiasCommand, longTimeoutBiasFrame);
-                const timeNow = new Date();
-                const elapsedTime = (timeNow.getTime() - timeBeforeCapture.getTime()) / 1000.0;
-                if (errorCode == 0) {
-                    res.status(200).send({time: elapsedTime});
+                if (await tsxService.serverHealthy()) {
+                    console.log('Server reports healthy');
+                    const timeBeforeCapture = new Date();
+                    console.log('Asking for bias frame: ', captureBiasCommand);
+                    const {message, suffix, errorCode } = await tsxService.sendAndReceive(captureBiasCommand, longTimeoutBiasFrame);
+                    const timeNow = new Date();
+                    const elapsedTime = (timeNow.getTime() - timeBeforeCapture.getTime()) / 1000.0;
+                    if (errorCode == 0) {
+                        res.status(200).send({time: elapsedTime});
+                    } else {
+                        res.status(StatusCodes.SERVICE_UNAVAILABLE).send(message + suffix);
+                    }
                 } else {
-                    res.status(StatusCodes.SERVICE_UNAVAILABLE).send(message + suffix);
+                    res.status(StatusCodes.SERVICE_UNAVAILABLE).send('Server not responding');
                 }
             } catch (err: any) {
                 res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err.message);
