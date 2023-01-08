@@ -3,10 +3,7 @@ import {RouteMethod} from "../types/RouteMethod";
 import {RouteDescriptor} from "../types/RouteDescriptor";
 import {TSXConnectService, TSXConnectServiceSingleton} from "../services/TSXConnectService";
 import {StatusCodes} from "http-status-codes";
-
-const getAutosavePathCommand = "var path=ccdsoftCamera.AutoSavePath;\n"
-    + "var Out;\n"
-    + "Out=path;\n";
+import {CommandsService, CommandsServiceSingleton} from "../services/CommandsService";
 
 const shortTimeoutSimpleInfo = 2 * 1000;
 
@@ -18,10 +15,12 @@ export class GetAutosavePathRoute implements RouteDescriptor {
     async handler(req: Request, res: Response): Promise<void> {
         const tsxService: TSXConnectService = new TSXConnectServiceSingleton().getInstance();
         if (tsxService) {
-            console.log('Sending get-autosave command: ', getAutosavePathCommand);
+            const commandsService: CommandsService = new CommandsServiceSingleton().getInstance();
+            const getAutosaveCommand = commandsService.getAutosavePath();
+            // console.log('Sending get-autosave command: ', getAutosaveCommand);
             try {
-                const {message, suffix, errorCode} = await tsxService.sendAndReceive(getAutosavePathCommand, shortTimeoutSimpleInfo);
-                console.log('  Message returned: ', message);
+                const {message, suffix, errorCode} = await tsxService.sendAndReceive(getAutosaveCommand, shortTimeoutSimpleInfo);
+                // console.log('  Message returned: ', message);
                 if (errorCode == 0) {
                     res.status(200).send(message);
                 } else {

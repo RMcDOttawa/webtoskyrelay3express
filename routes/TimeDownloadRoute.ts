@@ -3,7 +3,7 @@ import {RouteMethod} from "../types/RouteMethod";
 import {RouteDescriptor} from "../types/RouteDescriptor";
 import {TSXConnectService, TSXConnectServiceSingleton} from "../services/TSXConnectService";
 import {StatusCodes} from "http-status-codes";
-import {CommandsService, CommandsServiceSingleton} from "../services/CommandsService";
+import {CommandsService, CommandsServiceSingleton, TSXSync} from "../services/CommandsService";
 
 const longTimeoutBiasFrame = 60 * 1000;
 
@@ -24,7 +24,7 @@ export class TimeDownloadRoute implements RouteDescriptor {
 
             //  Get command string to capture a bias frame with the specified binning
             const commandsService: CommandsService = new CommandsServiceSingleton().getInstance();
-            const captureBiasCommand = commandsService.captureBiasFrame(binningValue);
+            const captureBiasCommand = commandsService.captureBiasFrame(binningValue, TSXSync.sync, false);
 
             try {
                 const timeBeforeCapture = new Date();
