@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
 import {RouteMethod} from "../types/RouteMethod";
 import {RouteDescriptor} from "../types/RouteDescriptor";
+import {StatusCodes} from "http-status-codes";
 
 export class TestRelayRoute implements RouteDescriptor  {
 
@@ -8,6 +9,6 @@ export class TestRelayRoute implements RouteDescriptor  {
     method = RouteMethod.getMethod;
 
     handler(req: Request, res: Response): void {
-        res.status(200).send('Relay Success');
+        res.status(StatusCodes.OK).send('Relay Success');
     }
-};
+}

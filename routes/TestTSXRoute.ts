@@ -14,7 +14,7 @@ export class TestTSXRoute implements RouteDescriptor  {
         const tsxService: TSXConnectService = new TSXConnectServiceSingleton().getInstance();
         try {
             if (await tsxService.serverHealthy()) {
-                    res.status(200).send('TSX Success');
+                    res.status(StatusCodes.OK).send('TSX Success');
             } else {
                 res.status(StatusCodes.SERVICE_UNAVAILABLE).send('Server not responding');
             }

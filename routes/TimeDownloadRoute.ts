@@ -35,7 +35,7 @@ export class TimeDownloadRoute implements RouteDescriptor {
                     const timeNow = new Date();
                     const elapsedTime = (timeNow.getTime() - timeBeforeCapture.getTime()) / 1000.0;
                     if (errorCode == 0) {
-                        res.status(200).send({time: elapsedTime});
+                        res.status(StatusCodes.OK).send({time: elapsedTime});
                     } else {
                         res.status(StatusCodes.SERVICE_UNAVAILABLE).send(message + suffix);
                     }

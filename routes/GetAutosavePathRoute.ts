@@ -22,7 +22,7 @@ export class GetAutosavePathRoute implements RouteDescriptor {
                 const {message, suffix, errorCode} = await tsxService.sendAndReceive(getAutosaveCommand, shortTimeoutSimpleInfo);
                 // console.log('  Message returned: ', message);
                 if (errorCode == 0) {
-                    res.status(200).send(message);
+                    res.status(StatusCodes.OK).send(message);
                 } else {
                     res.status(StatusCodes.SERVICE_UNAVAILABLE).send(message + suffix);
                 }

@@ -18,7 +18,7 @@ export class SendRawTextRoute implements RouteDescriptor  {
             const textToSend = req.body.message;
             console.log(`  textToSend = '${textToSend}'`);
             const {message, suffix} = await tsxService.sendAndReceive(textToSend, mediumTimeoutUnknownText);
-            res.status(200).send(message + suffix);
+            res.status(StatusCodes.OK).send(message + suffix);
         } catch (err: any) {
             res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err.message);
         }

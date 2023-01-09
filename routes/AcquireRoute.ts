@@ -57,7 +57,7 @@ export class AcquireRoute implements RouteDescriptor {
                         console.log(`Bias frame command returned code ${errorCode}, message: `, message);
                     }
                     if (errorCode === 0) {
-                        res.status(200).send("OK");
+                        res.status(StatusCodes.OK).send("OK");
                     }
                 } else {
                     res.status(StatusCodes.SERVICE_UNAVAILABLE).send(message + suffix);
