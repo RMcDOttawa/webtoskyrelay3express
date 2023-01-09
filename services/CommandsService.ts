@@ -78,4 +78,9 @@ export class CommandsService {
             + "ccdsoftCamera.ExposureTime=0;\n"
             + "var cameraResult = ccdsoftCamera.TakeImage();\n"
     }
+
+    //  Command to ask the server if the camera is finished exposing a frame.
+    exposureCompleteCommand(): string {
+        return 'var response=ccdsoftCamera.IsExposureComplete; var Out;Out=response+\"\\n\";';
+    }
 }

@@ -4,6 +4,7 @@ import {SendRawTextRoute} from "./SendRawTextRoute";
 import {GetAutosavePathRoute} from "./GetAutosavePathRoute";
 import {TimeDownloadRoute} from "./TimeDownloadRoute";
 import {AcquireRoute} from "./AcquireRoute";
+import {IsExposingRoute} from "./IsExposingRoute";
 
 export const routes = [
     new TestRelayRoute(),
@@ -12,4 +13,5 @@ export const routes = [
     new GetAutosavePathRoute(),
     new TimeDownloadRoute(),
     new AcquireRoute(),
+    new IsExposingRoute(),
 ];
