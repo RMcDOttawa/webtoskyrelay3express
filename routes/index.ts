@@ -5,6 +5,7 @@ import {GetAutosavePathRoute} from "./GetAutosavePathRoute";
 import {TimeDownloadRoute} from "./TimeDownloadRoute";
 import {AcquireRoute} from "./AcquireRoute";
 import {IsExposingRoute} from "./IsExposingRoute";
+import {AbortExposureRoute} from "./AbortExposureRoute";
 
 export const routes = [
     new TestRelayRoute(),
@@ -14,4 +15,5 @@ export const routes = [
     new TimeDownloadRoute(),
     new AcquireRoute(),
     new IsExposingRoute(),
+    new AbortExposureRoute(),
 ];

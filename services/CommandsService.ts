@@ -75,12 +75,16 @@ export class CommandsService {
             + `ccdsoftCamera.AutoSaveOn=${autoSave};\n`
             + `ccdsoftCamera.BinX=${binning};\n`
             + `ccdsoftCamera.BinY=${binning};\n`
-            + "ccdsoftCamera.ExposureTime=0;\n"
+            + `ccdsoftCamera.ExposureTime=${exposure};\n`
             + "var cameraResult = ccdsoftCamera.TakeImage();\n"
     }
 
     //  Command to ask the server if the camera is finished exposing a frame.
     exposureCompleteCommand(): string {
         return 'var response=ccdsoftCamera.IsExposureComplete; var Out;Out=response+\"\\n\";';
+    }
+
+    abortExposure(): string {
+        return 'ccdsoftCamera.Abort(); var Out;Out="aborted\\n";';
     }
 }
