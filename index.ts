@@ -1,7 +1,9 @@
 import express, {Express} from 'express';
+import * as fs from "fs";
 import dotenv from 'dotenv';
 import {routes} from './routes';
 import {RouteMethod} from "./types/RouteMethod";
+import * as https from "https";
 
 dotenv.config();
 
@@ -34,6 +36,21 @@ routes.forEach(route => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
+//  Replace the following with code to create https server
+// app.listen(port, () => {
+//     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+// });
+
+https
+    .createServer(
+        {
+            key: fs.readFileSync("server.key"),
+            cert: fs.readFileSync("server.cert"),
+        },
+        app
+    )
+    .listen(3000, function () {
+        console.log(
+            `Server listening https on port ${port} Go to https://localhost:${port}/`
+        );
+    });
