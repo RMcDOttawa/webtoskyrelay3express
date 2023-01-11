@@ -41,8 +41,7 @@ routes.forEach(route => {
 //     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 // });
 
-https
-    .createServer(
+https.createServer(
         {
             key: fs.readFileSync("server.key"),
             cert: fs.readFileSync("server.cert"),
