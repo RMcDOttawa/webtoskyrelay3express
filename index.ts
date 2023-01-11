@@ -10,6 +10,7 @@ dotenv.config();
 const app: Express = express();
 const port: number = Number.isInteger(process.env.PORT) ? Number(process.env.PORT) : 3000;
 
+const httpsKeyPrefix = process.env.CERTPATH ? process.env.CERTPATH : '';
 
 // This allows us to access the body of POST/PUT requests in our route handlers (as req.body)
 app.use(express.json());
@@ -36,20 +37,23 @@ routes.forEach(route => {
     }
 });
 
-//  Replace the following with code to create https server
-// app.listen(port, () => {
-//     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-// });
-
-https.createServer(
+if (httpsKeyPrefix === '') {
+    //  No CERT provided, run simple http
+    app.listen(port, () => {
+        console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+    });
+} else {
+    //  Create https server
+    https.createServer(
         {
-            key: fs.readFileSync("server.key"),
-            cert: fs.readFileSync("server.cert"),
+            key: fs.readFileSync(httpsKeyPrefix + ".key"),
+            cert: fs.readFileSync(httpsKeyPrefix + ".cert"),
         },
         app
     )
-    .listen(3000, function () {
-        console.log(
-            `Server listening https on port ${port} Go to https://localhost:${port}/`
-        );
-    });
+        .listen(3000, function () {
+            console.log(
+                `Server listening https on port ${port} Go to https://localhost:${port}/`
+            );
+        });
+}
