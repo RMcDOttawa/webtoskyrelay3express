@@ -64,8 +64,9 @@ export class AcquireRoute implements RouteDescriptor {
                 }
             } catch (err: any) {
                 res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err.message);
+            } finally {
+                tsxService.close();
             }
-            tsxService.close();
         }
     }
 }

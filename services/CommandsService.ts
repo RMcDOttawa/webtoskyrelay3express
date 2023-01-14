@@ -87,4 +87,15 @@ export class CommandsService {
     abortExposure(): string {
         return 'ccdsoftCamera.Abort(); var Out;Out="aborted\\n";';
     }
+
+    setCooling(status: string, temperature: string): string {
+        console.log(`setCooling(${status},${temperature})`);
+        let command = '';
+        if (status === 'on') {
+            command = `ccdsoftCamera.TemperatureSetPoint=${temperature};\n`;
+        }
+        command += `ccdsoftCamera.RegulateTemperature=${status==='on'?'true':'false'};\n`;
+        command += 'Out="OK";\n';
+        return command;
+    }
 }

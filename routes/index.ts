@@ -6,6 +6,7 @@ import {TimeDownloadRoute} from "./TimeDownloadRoute";
 import {AcquireRoute} from "./AcquireRoute";
 import {IsExposingRoute} from "./IsExposingRoute";
 import {AbortExposureRoute} from "./AbortExposureRoute";
+import {SetCoolingRoute} from "./SetCoolingRoute";
 
 export const routes = [
     new TestRelayRoute(),
@@ -16,4 +17,5 @@ export const routes = [
     new AcquireRoute(),
     new IsExposingRoute(),
     new AbortExposureRoute(),
+    new SetCoolingRoute(),
 ];

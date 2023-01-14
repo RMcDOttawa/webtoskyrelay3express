@@ -75,15 +75,22 @@
   <tr>
     <td>GET</td>
     <td>/api/exposing</td>
-    <td>(none))</td>
+    <td>(none)</td>
     <td>Determine if camera is busy with an exposure</td>
     <td>{exposing: boolean}</td>
   </tr>
   <tr>
     <td>GET</td>
     <td>/api/abortexposure</td>
-    <td>(none))</td>
+    <td>(none)</td>
     <td>Aborts any exposure presently underway</td>
+    <td>no reply</td>
+  </tr>
+  <tr>
+    <td>GET</td>
+    <td>/api/setcooling/status/temperature</td>
+    <td>'on' or 'off'/target temperature (only if 'on')</td>
+    <td>Sets camera cooling on or off</td>
     <td>no reply</td>
   </tr>
   </tbody>
