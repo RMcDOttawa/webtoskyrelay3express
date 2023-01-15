@@ -7,29 +7,33 @@ import {CommandsService, CommandsServiceSingleton} from "../services/CommandsSer
 
 const shortTimeoutSimpleInfo = 2 * 1000;
 
-export class GetAutosavePathRoute implements RouteDescriptor {
+export class GetCoolerInfoRoute implements RouteDescriptor {
 
-    path = '/api/getautosavepath';
+    path = '/api/coolerinfo';
     method = RouteMethod.getMethod;
 
     async handler(req: Request, res: Response): Promise<void> {
         const tsxService: TSXConnectService = new TSXConnectServiceSingleton().getInstance();
         if (tsxService) {
             const commandsService: CommandsService = new CommandsServiceSingleton().getInstance();
-            const getAutosaveCommand = commandsService.getAutosavePath();
-            console.log('Sending get-autosave command: ', getAutosaveCommand);
+            const getCoolerInfoCommand = commandsService.getCoolerInfo();
+            console.log('Sending get-cooler-info command: ', getCoolerInfoCommand);
             try {
-                const {message, suffix, errorCode} = await tsxService.sendAndReceive(getAutosaveCommand, shortTimeoutSimpleInfo);
-                // console.log('  Message returned: ', message);
+                const {message, suffix, errorCode} = await tsxService.sendAndReceive(getCoolerInfoCommand, shortTimeoutSimpleInfo);
+                console.log(` Result "${message}" code ${errorCode} suffix ${suffix}`);
+                const parts = message.split(',');
                 if (errorCode == 0) {
-                    res.status(StatusCodes.OK).send(message);
+                    res.status(StatusCodes.OK).send({
+                        temperature: Number(parts[0]),
+                        power: Number(parts[1])});
                 } else {
                     res.status(StatusCodes.SERVICE_UNAVAILABLE).send(message + suffix);
                 }
             } catch (err: any) {
                 res.status(StatusCodes.SERVICE_UNAVAILABLE).send(err.message);
+            } finally {
+                tsxService.close();
             }
-            tsxService.close();
         } else {
             res.status(StatusCodes.SERVICE_UNAVAILABLE).send('Unable to connect to TheSkyX');
         }

@@ -16,6 +16,8 @@ export class AbortExposureRoute implements RouteDescriptor  {
         const tsxService: TSXConnectService = new TSXConnectServiceSingleton().getInstance();
         const commandsService: CommandsService = new CommandsServiceSingleton().getInstance();
         const abortCommand = commandsService.abortExposure();
+        console.log('Abort Exposure sending:');
+        console.log(abortCommand);
         try {
             let { message } = await tsxService.sendAndReceive(abortCommand, briefTimeout);
             res.status(StatusCodes.OK).send(message);

@@ -7,6 +7,8 @@ import {AcquireRoute} from "./AcquireRoute";
 import {IsExposingRoute} from "./IsExposingRoute";
 import {AbortExposureRoute} from "./AbortExposureRoute";
 import {SetCoolingRoute} from "./SetCoolingRoute";
+import {GetTemperatureRoute} from "./GetTemperatureRoute";
+import {GetCoolerInfoRoute} from "./GetCoolerInfoRoute";
 
 export const routes = [
     new TestRelayRoute(),
@@ -18,4 +20,6 @@ export const routes = [
     new IsExposingRoute(),
     new AbortExposureRoute(),
     new SetCoolingRoute(),
+    new GetTemperatureRoute(),
+    new GetCoolerInfoRoute(),
 ];

@@ -53,7 +53,7 @@ export class CommandsService {
 
     //  Command to get the camera autosave path from TheSky
     getAutosavePath(): string {
-        return  "var path=ccdsoftCamera.AutoSavePath;\n"
+        return "var path=ccdsoftCamera.AutoSavePath;\n"
             + "var Out;\n"
             + "Out=path;\n";
 
@@ -94,8 +94,25 @@ export class CommandsService {
         if (status === 'on') {
             command = `ccdsoftCamera.TemperatureSetPoint=${temperature};\n`;
         }
-        command += `ccdsoftCamera.RegulateTemperature=${status==='on'?'true':'false'};\n`;
+        command += `ccdsoftCamera.RegulateTemperature=${status === 'on' ? 'true' : 'false'};\n`;
         command += 'Out="OK";\n';
         return command;
+    }
+
+    // String commandWithReturn = "var temp=ccdsoftCamera.Temperature;"
+    //     + "var power=ccdsoftCamera.ThermalElectricCoolerPower;"
+    //     + "var Out;"
+    //     + "Out=temp+\",\"+power+\"\\n\";";
+
+    getTemperature(): string {
+        return 'var temp=ccdsoftCamera.Temperature;\n' +
+            'var Out;' +
+            'Out=temp;\n';
+    }
+
+    getCoolerInfo() {
+        return 'var temp=ccdsoftCamera.Temperature;\n' +
+            'var power=ccdsoftCamera.ThermalElectricCoolerPower;\n' +
+            'var Out;Out=temp + "," + power + "\\n";\n';
     }
 }

@@ -32,7 +32,7 @@ export class SetCoolingRoute implements RouteDescriptor {
                 if (await tsxService.serverHealthy()) {
                     // console.log('Server reports healthy');
                     const command = commandsService.setCooling(status, temperature);
-                    console.log('Cooling command: ');
+                    console.log('Set Cooling sending:');
                     console.log(command);
                     await tsxService.sendAndReceive(command, briefSettingOnly);
                     const statusSuffix = (status === 'on' ? ', temperature ' + temperature : '');

@@ -42,24 +42,29 @@ export class TSXConnectService {
     establishConnection(hostName: string, port: number, timeOut: number): Promise<net.Socket> {
         // console.log(`establishConnection(${hostName},${port}) entered`);
         return new Promise ((resolve, reject) => {
-            this.socket = new net.Socket();
-            this.socket.setTimeout(timeOut);
-            // console.log('  Setting up event handlers');
-            this.socket.on('timeout', () => {
-                this.socket!.emit('error', new Error('ETIMEDOUT'));
-            });
-            this.socket.on('connect', () => {
-                // console.log('  connect callback called');
-                resolve(this.socket!);
-            });
-            this.socket.on('error', () => {
-                // console.log('  connect error callback called');
-                reject('Error on socket.connect');
-            });
-            // console.log('  Connecting');
-            this.socket.connect(port, hostName, () => {
-                // console.log('establishConnection/connect listener called');
-            });
+            try {
+                this.socket = new net.Socket();
+                this.socket.setTimeout(timeOut);
+                // console.log('  Setting up event handlers');
+                this.socket.on('timeout', () => {
+                    this.socket!.emit('error', new Error('ETIMEDOUT'));
+                });
+                this.socket.on('connect', () => {
+                    // console.log('  connect callback called');
+                    resolve(this.socket!);
+                });
+                this.socket.on('error', () => {
+                    // console.log('  connect error callback called');
+                    reject('Error on socket.connect');
+                });
+                // console.log('  Connecting');
+                this.socket.connect(port, hostName, () => {
+                    // console.log('establishConnection/connect listener called');
+                });
+            } catch (err) {
+                console.log('Failure in establishConnection: ', err);
+                reject(err);
+            }
         });
     }
 
@@ -67,32 +72,37 @@ export class TSXConnectService {
     //  returning a promise of results.  The promise, when resolved, parses the response
     //  and returns a 3-ple of the text message, the suffix, and the error code
     async sendAndReceive(command: string, timeout: number): Promise<TSXResponseParts> {
-        // console.log('TSXConnectService/sendAndReceive entered');
-        // console.log('  Establishing connection');
-        this.socket = await this.establishConnection(tsxHost, portNumber, timeout);
-        // console.log('  Socket = ', this.socket);
+        console.log('TSXConnectService/sendAndReceive entered');
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                console.log('  Establishing connection');
+                this.socket = await this.establishConnection(tsxHost, portNumber, timeout);
+                // console.log('  Socket = ', this.socket);
 
-            //  Listen for data coming back from the server. This will resolve the promise
-            this.socket!.on('data', (dataBuffer) => {
-                const responseString = dataBuffer.toString();
-                const parsedParts: TSXResponseParts = this.parseResponseParts(responseString);
-                // console.log('data event received: ', responseString);
-                // console.log('  resolving promise with 3ple: ', parsedParts);
-                resolve(parsedParts);
-            });
+                //  Listen for data coming back from the server. This will resolve the promise
+                this.socket!.on('data', (dataBuffer) => {
+                    const responseString = dataBuffer.toString();
+                    const parsedParts: TSXResponseParts = this.parseResponseParts(responseString);
+                    // console.log('data event received: ', responseString);
+                    // console.log('  resolving promise with 3ple: ', parsedParts);
+                    resolve(parsedParts);
+                });
 
-            //  If we get an error back from the server we'll reject the promise
-            this.socket!.on('error', (error) => {
-                // console.log('server error received: ', error);
-                reject(error);
-            })
+                //  If we get an error back from the server we'll reject the promise
+                this.socket!.on('error', (error) => {
+                    // console.log('server error received: ', error);
+                    reject(error);
+                })
 
-            //  Send the message to the server
-            this.socket!.write(  this.encapsulateJsForTheSky(command + ";\n"), () => {
-                // console.log('SendAndReceive write callback: write is complete.')
-            });
+                //  Send the message to the server
+                this.socket!.write(this.encapsulateJsForTheSky(command + ";\n"), () => {
+                    // console.log('SendAndReceive write callback: write is complete.')
+                });
+            } catch (err) {
+                console.log('Failure in sendAndReceive: ', err);
+                reject(err);
+            }
         })
     }
 
@@ -134,10 +144,10 @@ export class TSXConnectService {
     //  its build level
     async serverHealthy(): Promise<boolean> {
         return new Promise<boolean>(async (resolve) => {
-            // console.log('serverHealth called');
+            console.log('serverHealthy called');
             const shortTimeoutSimpleInfo = 5 * 1000;
             const trivialCommand = this.commandsService.getServerBuildCommand();
-            // console.log('  Sending test command: ', trivialCommand);
+            console.log('  Sending test command: ', trivialCommand);
             try {
                 const {message, errorCode} = await this.sendAndReceive(trivialCommand, shortTimeoutSimpleInfo);
                 // console.log(`  Received code ${errorCode}, message: `, message);
@@ -149,6 +159,7 @@ export class TSXConnectService {
                     this.close();
                 }
             } catch (error) {
+                console.log('Failure in serverHealthy: ', error);
                 resolve(false);
                 this.close();
             }

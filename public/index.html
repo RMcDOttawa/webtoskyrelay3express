@@ -93,6 +93,21 @@
     <td>Sets camera cooling on or off</td>
     <td>no reply</td>
   </tr>
+  <tr>
+    <td>GET</td>
+    <td>/api/gettemperature</td>
+    <td>(none)</td>
+    <td>Returns camera current temperature</td>
+    <td>Number or 'NONE' if not available</td>
+  </tr>
+  <tr>
+    <td>GET</td>
+    <td>/api/getcoolerinfo</td>
+    <td>(none)</td>
+    <td>Returns cooler %power and current temperature</td>
+    <td>{temperature: number ,power: number}</td>
+  </tr>
+
   </tbody>
 </table>
 </body>

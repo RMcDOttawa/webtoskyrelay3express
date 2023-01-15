@@ -14,11 +14,11 @@ export class IsExposingRoute implements RouteDescriptor  {
     method = RouteMethod.getMethod;
 
     async handler(req: Request, res: Response): Promise<void> {
-        // console.log('IsExposingRoute route');
+        console.log('IsExposingRoute route');
         const tsxService: TSXConnectService = new TSXConnectServiceSingleton().getInstance();
         const commandsService: CommandsService = new CommandsServiceSingleton().getInstance();
         const exposureCompleteCommand = commandsService.exposureCompleteCommand();
-        // console.log('  Using command: ', exposureCompleteCommand);
+        console.log('  Using command: ', exposureCompleteCommand);
         try {
             let { message } = await tsxService.sendAndReceive(exposureCompleteCommand,
                 briefTimeoutStatusCheckOnly);
