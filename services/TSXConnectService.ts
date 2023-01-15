@@ -40,14 +40,14 @@ export class TSXConnectService {
 
     //  Establish net connection in promise form, so we can wait for it to succeed
     establishConnection(hostName: string, port: number, timeOut: number): Promise<net.Socket> {
-        // console.log(`establishConnection(${hostName},${port}) entered`);
+        // console.log(`establishConnection(${hostName},${port},${timeOut}) entered`);
         return new Promise ((resolve, reject) => {
             try {
                 this.socket = new net.Socket();
                 this.socket.setTimeout(timeOut);
                 // console.log('  Setting up event handlers');
                 this.socket.on('timeout', () => {
-                    this.socket!.emit('error', new Error('ETIMEDOUT'));
+                    reject('Timeout on socket.connect');
                 });
                 this.socket.on('connect', () => {
                     // console.log('  connect callback called');
@@ -76,7 +76,7 @@ export class TSXConnectService {
 
         return new Promise(async (resolve, reject) => {
             try {
-                console.log('  Establishing connection');
+                // console.log('  Establishing connection');
                 this.socket = await this.establishConnection(tsxHost, portNumber, timeout);
                 // console.log('  Socket = ', this.socket);
 
