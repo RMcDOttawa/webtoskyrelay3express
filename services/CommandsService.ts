@@ -90,10 +90,9 @@ export class CommandsService {
 
     setCooling(status: string, temperature: string): string {
         console.log(`setCooling(${status},${temperature})`);
-        let command = '';
-        command += `ccdsoftCamera.RegulateTemperature=${status === 'on' ? 'true' : 'false'};\n`;
+        let command = `ccdsoftCamera.RegulateTemperature=${status === 'on' ? 'true' : 'false'};\n`;
         if (status === 'on') {
-            command = `ccdsoftCamera.TemperatureSetPoint=${temperature};\n`;
+            command += `ccdsoftCamera.TemperatureSetPoint=${temperature};\n`;
         }
         command += 'Out="OK";\n';
         return command;
